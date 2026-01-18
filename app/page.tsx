@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Outfit, DM_Sans } from 'next/font/google';
 import { motion, Variants, AnimatePresence } from 'framer-motion'; 
-import { Menu, X, Globe, ArrowRight, CreditCard, Send, Smartphone, Users, ChevronRight, Plus, CheckCircle } from 'lucide-react';
+import { Menu, X, Globe, ArrowRight, CreditCard, Send, Smartphone, Users, ChevronRight, Plus, CheckCircle, Wallet, ArrowUpRight, Calendar, CreditCard as CreditCardIcon } from 'lucide-react';
 
 // --- CONFIGURACIÓN DE FUENTES ---
 const fontHeading = Outfit({ subsets: ['latin'], weight: ['400', '600', '700'] });
@@ -36,13 +36,39 @@ const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15 }
+    transition: { staggerChildren: 0.1 } 
   }
 };
 
 const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.9 },
+  hidden: { opacity: 0, scale: 0.95 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
+};
+
+// --- NUEVA ANIMACIÓN "ALIVE" LENTA (SLOW BREATH) ---
+// Ajustada para ser mucho más lenta y fluida
+const aliveVariant: Variants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: (i: number) => ({
+        // KEYFRAMES: Aparecer -> Mantener -> Desvanecer (no del todo) -> Reaparecer
+        opacity: [0, 1, 1, 0.1, 1], 
+        // Sutil respiración en tamaño
+        scale: [0.95, 1, 1, 0.98, 1], 
+        transition: {
+            delay: i * 0.4, // Mayor desfase inicial entre elementos
+            duration: 18, // Ciclo total de 18 segundos (muy lento)
+            // Tiempos porcentuales ajustados para transiciones largas y suaves:
+            // 0-15%: Aparición muy lenta (~2.7s)
+            // 15%-75%: MANTENER VISIBLE (~10.8s)
+            // 75%-90%: Desvanecimiento lento (~2.7s)
+            // 90%-100%: Reaparición (~1.8s)
+            times: [0, 0.15, 0.75, 0.9, 1], 
+            
+            repeat: Infinity,
+            repeatDelay: 0,
+            ease: "easeInOut" // Curva de suavizado
+        }
+    })
 };
 
 // Variantes para el texto del botón de idioma
@@ -55,6 +81,18 @@ const langSwitchVariants: Variants = {
 interface Content {
   nav: { home: string; about: string; features: string; card: string; faq: string; cta: string; };
   hero: { tagline: string; titleLine1: string; titleLine2: string; description: string; ctaPrimary: string; ctaSecondary: string; trust: string; };
+  heroBento: {
+      sendBtn: string;
+      requestBtn: string;
+      balanceTitle: string;
+      seeDetails: string;
+      depositBtn: string;
+      transferBtn: string;
+      depositDate: string;
+      depositDesc: string;
+      cardType: string;
+      atmText: string;
+  };
   features: { title: string; subtitle: string; cards: Array<{ title: string; desc: string; icon: React.ReactNode; }>; };
   cardSection: { title: string; subtitle: string; desc: string; list: string[]; cta: string; };
   faq: { title: string; subtitle: string; items: Array<{ question: string; answer: string; }>; cta: string; ctaButton: string; };
@@ -73,6 +111,18 @@ const content: Record<Language, Content> = {
       ctaPrimary: "Abrir Cuenta Gratis",
       ctaSecondary: "Cómo funciona",
       trust: "Más de 1M de latinos confían en nosotros",
+    },
+    heroBento: {
+        sendBtn: "Enviar",
+        requestBtn: "Solicitar",
+        balanceTitle: "Saldo disponible",
+        seeDetails: "Ver detalles",
+        depositBtn: "Deposita",
+        transferBtn: "Transfiere",
+        depositDate: "24 Sept",
+        depositDesc: "Depósito recibido",
+        cardType: "Débito",
+        atmText: "Retiros Gratis"
     },
     features: {
       title: "MÁS QUE UN BANCO, TU ALIADO",
@@ -116,6 +166,18 @@ const content: Record<Language, Content> = {
       ctaSecondary: "Watch Video",
       trust: "Trusted by 1M+ users nationwide",
     },
+    heroBento: {
+        sendBtn: "Send",
+        requestBtn: "Request",
+        balanceTitle: "Available balance",
+        seeDetails: "Details",
+        depositBtn: "Deposit",
+        transferBtn: "Transfer",
+        depositDate: "Sept 24",
+        depositDesc: "Direct deposit received",
+        cardType: "Debit",
+        atmText: "Free Withdrawals"
+    },
     features: {
       title: "NEXT-GEN FINANCIAL TOOLS",
       subtitle: "THE DIGITAL EDGE",
@@ -126,7 +188,7 @@ const content: Record<Language, Content> = {
       ],
     },
     cardSection: {
-        subtitle: "YOUR PHYSICAL CASH",
+        subtitle: "YOUR CASH, PHYSICAL",
         title: "THE CARD THAT KEEPS UP",
         desc: "Seamlessly manage your finances with a premium US checking account. No maintenance fees, no minimum balance requirements. Just total control.",
         list: ["Worldwide Visa acceptance", "No hidden transaction fees", "Instantly freeze card in-app"],
@@ -221,9 +283,8 @@ export default function LandingPage() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-500">
-            {/* key={lang} para animar el texto del menú al cambiar idioma */}
             <AnimatePresence mode="wait">
-              <motion.div key={lang} variants={staggerContainer} initial="hidden" animate="visible" className="flex gap-8">
+              <motion.div key={`menu-${lang}`} variants={staggerContainer} initial="hidden" animate="visible" className="flex gap-8">
                 <motion.a variants={fadeInUp} href="#home" onClick={(e) => scrollToSection(e, 'home')} className="hover:text-black transition-colors">{t.nav.home}</motion.a>
                 <motion.a variants={fadeInUp} href="#features" onClick={(e) => scrollToSection(e, 'features')} className="hover:text-black transition-colors">{t.nav.features}</motion.a>
                 <motion.a variants={fadeInUp} href="#card" onClick={(e) => scrollToSection(e, 'card')} className="hover:text-black transition-colors">{t.nav.card}</motion.a>
@@ -231,7 +292,6 @@ export default function LandingPage() {
               </motion.div>
             </AnimatePresence>
             
-            {/* Switch de Idioma Animado */}
             <motion.button 
               onClick={toggleLang}
               whileHover={{ scale: 1.05, backgroundColor: "#f9fafb" }}
@@ -254,7 +314,7 @@ export default function LandingPage() {
             </motion.button>
 
             <motion.button 
-              key={`cta-${lang}`} // Reinicia animación al cambiar idioma
+              key={`cta-${lang}`}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.05 }}
@@ -278,9 +338,8 @@ export default function LandingPage() {
             animate={{ opacity: 1, height: 'auto' }}
             className="md:hidden bg-white border-t border-gray-100 p-6 flex flex-col gap-6 absolute w-full shadow-xl top-[70px]"
           >
-            {/* Menú móvil animado al cambiar idioma */}
             <AnimatePresence mode="wait">
-                <motion.div key={lang} variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-6">
+                <motion.div key={`mobile-menu-${lang}`} variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-6">
                     <motion.a variants={fadeInLeft} href="#home" onClick={(e) => scrollToSection(e, 'home')} className="text-xl font-bold">{t.nav.home}</motion.a>
                     <motion.a variants={fadeInLeft} href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-xl font-bold">{t.nav.features}</motion.a>
                     <motion.a variants={fadeInLeft} href="#card" onClick={(e) => scrollToSection(e, 'card')} className="text-xl font-bold">{t.nav.card}</motion.a>
@@ -312,11 +371,11 @@ export default function LandingPage() {
 
       {/* --- HERO SECTION --- */}
       <header id="home" className="pt-36 pb-12 md:pb-24 px-6 bg-white overflow-hidden relative">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           
-          {/* Text Content - Con Key={lang} para animar todo el bloque al cambiar idioma */}
+          {/* Text Content (Left) */}
           <motion.div 
-            key={lang}
+            key={`hero-text-${lang}`} 
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
@@ -357,49 +416,152 @@ export default function LandingPage() {
             </motion.div>
           </motion.div>
 
-          {/* HERO IMAGE CONTAINER & BACKGROUND (ESTÁTICO) */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative flex justify-center items-center md:h-[800px] z-10 mt-10 md:mt-0"
+          {/* --- BENTO GRID CONTAINER (Right) --- */}
+          <div 
+            className="grid grid-cols-2 lg:grid-cols-12 grid-rows-auto lg:grid-rows-6 gap-3 min-h-[600px] lg:h-[600px] relative z-10 mt-10 lg:mt-0"
           >
-            {/* --- FONDO DE FIGURAS GEOMÉTRICAS ESTÁTICAS --- 
-                Sin animación de rotación, pero conservando los estilos.
-            */}
-            
-            {/* Anillo grande exterior */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                            w-[400px] h-[400px] md:w-[600px] md:h-[600px] 
-                            rounded-full border-2 border-[#00B3FF]/40 -z-10"></div>
-            
-            {/* Anillo mediano descentrado */}
-            <div className="absolute top-[40%] left-[60%] -translate-x-1/2 -translate-y-1/2 
-                            w-[300px] h-[300px] md:w-[450px] md:h-[450px] 
-                            rounded-full border-2 border-[#00B3FF]/50 -z-10"></div>
-            
-            {/* Círculo sólido central */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                            w-[250px] h-[250px] md:w-[350px] md:h-[350px] 
-                            rounded-full bg-[#00B3FF]/15 -z-10"></div>
+              {/* 1. Tarjeta Blxck Card (Índice 0) */}
+              <motion.div 
+                custom={0}
+                variants={aliveVariant}
+                initial="hidden"
+                animate="visible"
+                className="col-span-2 lg:col-span-5 row-span-1 lg:row-span-3 bg-[#00B3FF] rounded-2xl p-6 flex flex-col justify-between text-white relative overflow-hidden"
+              >
+                  <div className="h-full flex flex-col justify-between">
+                    <div className="flex justify-between items-start">
+                        <CreditCardIcon size={28} className="opacity-90" />
+                        <span className="font-bold tracking-widest text-sm opacity-80">{t.heroBento.cardType.toUpperCase()}</span>
+                    </div>
+                    <div>
+                        <p className="font-bold text-xl mb-1">Blxck Pay</p>
+                        <p className="text-sm opacity-70">**** 4590</p>
+                    </div>
+                  </div>
+                  <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/20 rounded-full blur-xl"></div>
+              </motion.div>
 
-            {/* Pequeño círculo decorativo */}
-             <div className="absolute bottom-[10%] left-[20%] 
-                            w-24 h-24 rounded-full bg-[#00B3FF]/25 -z-10"></div>
+              {/* 2. Tarjeta $100 Transferencia (Índice 1) */}
+              <motion.div 
+                custom={1}
+                variants={aliveVariant}
+                initial="hidden"
+                animate="visible"
+                className="col-span-1 lg:col-span-7 row-span-1 lg:row-span-3 bg-zinc-900 text-white rounded-2xl p-4 lg:p-6 flex flex-col justify-center items-center text-center shadow-sm border border-zinc-800"
+              >
+                <div className="w-full flex flex-col items-center">
+                    <div className="text-3xl lg:text-5xl font-bold mb-4">$100</div>
+                    <div className="w-full flex flex-col lg:flex-row gap-2">
+                        <button className="bg-white text-black w-full py-2 lg:py-3 rounded-full font-bold text-xs lg:text-sm hover:bg-gray-200 transition">
+                        {t.heroBento.sendBtn}
+                        </button>
+                        <button className="bg-zinc-800 text-white w-full py-2 lg:py-3 rounded-full font-bold text-xs lg:text-sm hover:bg-zinc-700 transition">
+                        {t.heroBento.requestBtn}
+                        </button>
+                    </div>
+                </div>
+              </motion.div>
 
-            
-            {/* Contenedor del Celular */}
-            <div className="relative z-10 w-full max-w-[280px] md:max-w-none md:w-[550px] lg:w-[650px] transform hover:scale-[1.02] transition-transform duration-700 ease-in-out mx-auto">
-                <Image src="/heroblxckpay.png" alt="Blxck Pay App Interface" width={650} height={1300} className="drop-shadow-2xl object-contain h-auto w-full" priority />
-            </div>
-          </motion.div>
+               {/* 3. Foto Grupo Latino Trabajando (Índice 2) */}
+               <motion.div 
+                 custom={2}
+                 variants={aliveVariant}
+                 initial="hidden"
+                 animate="visible"
+                 className="col-span-1 lg:col-span-8 row-span-2 lg:row-span-3 relative rounded-2xl overflow-hidden"
+                >
+                    <div className="w-full h-full relative">
+                        <Image 
+                            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2670&auto=format&fit=crop" 
+                            alt="Latin team working together" 
+                            fill 
+                            className="object-cover hover:scale-105 transition-transform duration-700 grayscale-[10%]"
+                        />
+                    </div>
+               </motion.div>
+               
+               {/* 4. Foto ATM Local (Índice 3) - REEMPLAZADA POR URL PARA MÓVIL */}
+               <motion.div 
+                 custom={3}
+                 variants={aliveVariant}
+                 initial="hidden"
+                 animate="visible"
+                 className="col-span-1 lg:col-span-4 row-span-1 lg:row-span-2 relative rounded-2xl overflow-hidden"
+                >
+                 <div className="w-full h-full relative">
+                    {/* Usamos una URL de Unsplash para asegurar que se vea en móvil */}
+                    <Image 
+                            src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=2670&auto=format&fit=crop" 
+                            alt="Persona en cajero ATM" 
+                            fill 
+                            className="object-cover hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-[10px] text-white font-medium">
+                            {t.heroBento.atmText}
+                        </div>
+                 </div>
+               </motion.div>
+
+               {/* 5. Tarjeta Saldo (Índice 4) */}
+               <motion.div 
+                 custom={4}
+                 variants={aliveVariant}
+                 initial="hidden"
+                 animate="visible"
+                 className="col-span-2 lg:col-span-4 row-span-1 lg:row-span-2 bg-zinc-900 text-white rounded-2xl p-4 lg:p-5 flex flex-col justify-between shadow-lg z-20 border border-zinc-800"
+               >
+                  <div className="h-full flex flex-col justify-between">
+                    <div>
+                        <p className="text-xs text-gray-400 font-bold mb-1">{t.heroBento.balanceTitle}</p>
+                        <p className="text-3xl lg:text-4xl font-bold tracking-tight">$491.33</p>
+                    </div>
+                    <div className="flex gap-2 mt-2 lg:mt-0">
+                        <button className="bg-white text-black text-[10px] py-2 px-3 rounded-full flex-1 hover:bg-gray-200 transition">{t.heroBento.depositBtn}</button>
+                        <button className="bg-zinc-800 text-white text-[10px] py-2 px-3 rounded-full flex-1 hover:bg-zinc-700 transition">{t.heroBento.transferBtn}</button>
+                    </div>
+                  </div>
+               </motion.div>
+
+               {/* 6. Tarjeta Depósito (Índice 5) */}
+               <motion.div 
+                 custom={5}
+                 variants={aliveVariant}
+                 initial="hidden"
+                 animate="visible"
+                 className="col-span-1 lg:col-span-5 row-span-1 lg:row-span-2 bg-zinc-900 text-white rounded-2xl p-4 lg:p-6 flex flex-col justify-center shadow-sm border border-zinc-800"
+               >
+                 <div>
+                    <p className="text-xs text-gray-400 mb-1">{t.heroBento.depositDate}</p>
+                    <p className="text-2xl lg:text-3xl font-bold text-[#00B3FF] mb-1">+$1,089.34</p>
+                    <p className="text-xs font-semibold text-gray-300">{t.heroBento.depositDesc}</p>
+                 </div>
+               </motion.div>
+
+                {/* 7. Foto Mujer Latina Disfrutando (Índice 6) */}
+               <motion.div 
+                 custom={6}
+                 variants={aliveVariant}
+                 initial="hidden"
+                 animate="visible"
+                 className="col-span-1 lg:col-span-3 row-span-1 lg:row-span-2 relative rounded-2xl overflow-hidden"
+                >
+                 <div className="w-full h-full relative">
+                    <Image 
+                            src="https://images.unsplash.com/photo-1615813967515-e1838c1c5116?q=80&w=2574&auto=format&fit=crop" 
+                            alt="Happy Latin woman paying with phone" 
+                            fill 
+                            className="object-cover hover:scale-105 transition-transform duration-700"
+                        />
+                 </div>
+               </motion.div>
+          </div>
         </div>
       </header>
 
       {/* --- FEATURES SECTION --- */}
       <section id="features" className="bg-black py-24 px-6 text-white border-t border-zinc-900">
          <motion.div 
-           key={lang} // Animación al cambiar idioma
+           key={`features-${lang}`} 
            initial="hidden"
            whileInView="visible"
            viewport={{ once: true, margin: "-100px" }}
@@ -447,18 +609,16 @@ export default function LandingPage() {
                variants={scaleIn}
                className="order-2 md:order-1 relative flex justify-center"
              >
-                 {/* Decorative element behind card */}
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] border-2 border-[#00B3FF]/30 rounded-full"></div>
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#00B3FF]/10 rounded-full"></div>
-                 
                  <div className="relative z-10 transform -rotate-6 hover:rotate-0 transition-all duration-700 w-[300px] md:w-[500px]">
                     <Image src="/cardblxckpay.png" alt="Blxck Pay Debit Card" width={600} height={400} className="drop-shadow-2xl object-contain h-auto w-full" />
                  </div>
              </motion.div>
 
-             {/* Text Content - Con Key={lang} */}
+             {/* Text Content */}
              <motion.div 
-               key={lang}
+               key={`card-text-${lang}`}
                initial="hidden"
                whileInView="visible"
                viewport={{ once: true }}
@@ -494,7 +654,7 @@ export default function LandingPage() {
       {/* --- FAQ SECTION --- */}
       <section id="faq" className="bg-zinc-950 py-24 px-6 text-white border-t border-zinc-900">
          <motion.div 
-           key={lang}
+           key={`faq-${lang}`}
            initial="hidden"
            whileInView="visible"
            viewport={{ once: true }}
