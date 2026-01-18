@@ -46,27 +46,18 @@ const scaleIn: Variants = {
 };
 
 // --- NUEVA ANIMACIÓN "ALIVE" LENTA (SLOW BREATH) ---
-// Ajustada para ser mucho más lenta y fluida
 const aliveVariant: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: (i: number) => ({
-        // KEYFRAMES: Aparecer -> Mantener -> Desvanecer (no del todo) -> Reaparecer
         opacity: [0, 1, 1, 0.1, 1], 
-        // Sutil respiración en tamaño
         scale: [0.95, 1, 1, 0.98, 1], 
         transition: {
-            delay: i * 0.4, // Mayor desfase inicial entre elementos
-            duration: 18, // Ciclo total de 18 segundos (muy lento)
-            // Tiempos porcentuales ajustados para transiciones largas y suaves:
-            // 0-15%: Aparición muy lenta (~2.7s)
-            // 15%-75%: MANTENER VISIBLE (~10.8s)
-            // 75%-90%: Desvanecimiento lento (~2.7s)
-            // 90%-100%: Reaparición (~1.8s)
+            delay: i * 0.4, 
+            duration: 18, 
             times: [0, 0.15, 0.75, 0.9, 1], 
-            
             repeat: Infinity,
             repeatDelay: 0,
-            ease: "easeInOut" // Curva de suavizado
+            ease: "easeInOut" 
         }
     })
 };
@@ -276,7 +267,8 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           
           <a href="#home" onClick={(e) => scrollToSection(e, 'home')} className="flex items-center cursor-pointer">
-            <div className="relative w-44 h-12 md:w-64 md:h-20">
+            {/* ▼▼▼ CAMBIO AQUÍ: Se redujeron las clases de tamaño (w- y h-) ▼▼▼ */}
+            <div className="relative w-32 h-10 md:w-44 md:h-14">
                 <Image src="/logoblxckpay.png" alt="Blxck Pay Logo" fill className="object-contain object-left" priority />
             </div>
           </a>
@@ -489,7 +481,6 @@ export default function LandingPage() {
                  className="col-span-1 lg:col-span-4 row-span-1 lg:row-span-2 relative rounded-2xl overflow-hidden"
                 >
                  <div className="w-full h-full relative">
-                    {/* Usamos una URL de Unsplash para asegurar que se vea en móvil */}
                     <Image 
                             src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=2670&auto=format&fit=crop" 
                             alt="Persona en cajero ATM" 
