@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Outfit, DM_Sans } from 'next/font/google';
 import { motion, Variants, AnimatePresence } from 'framer-motion'; 
-// CORRECCIÓN: Se agregó 'CheckCircle' a los imports
-import { Menu, X, Globe, ArrowRight, ChevronRight, Plus, ShieldCheck, Handshake, CheckCircle } from 'lucide-react';
+import { Menu, X, Globe, ArrowRight, ChevronRight, Plus, ShieldCheck, Handshake, CheckCircle, Moon, Sun } from 'lucide-react';
 
 // --- CONFIGURACIÓN DE FUENTES ---
 const fontHeading = Outfit({ subsets: ['latin'], weight: ['400', '600', '700'] });
@@ -13,6 +12,7 @@ const fontBody = DM_Sans({ subsets: ['latin'], weight: ['400', '500'] });
 
 // --- TIPOS DE DATOS ---
 type Language = 'es' | 'en';
+type Theme = 'dark' | 'light';
 
 // Color institucional (Cyan)
 const accentColor = '#00B3FF';
@@ -31,7 +31,6 @@ const staggerContainer: Variants = {
   }
 };
 
-// Variantes para el texto del botón de idioma
 const langSwitchVariants: Variants = {
     initial: { opacity: 0, y: 10 },
     animate: { opacity: 1, y: 0 },
@@ -92,7 +91,7 @@ const content: Record<Language, Content> = {
         { question: "¿Mi dinero está seguro en EE. UU.?", answer: "Totalmente. Tu cuenta está asegurada por la FDIC hasta $250,000 a través de nuestro banco socio. Tu dinero es tuyo y está protegido bajo las leyes estadounidenses." }
       ],
       cta: "¿Tienes más dudas sobre BlxckPay?",
-      ctaButton: "Llamar a BlxckPay"
+      ctaButton: "Contactar Soporte"
     },
     footer: { copyright: "© 2026 Blxck Pay en colaboración con Croft.", },
   },
@@ -126,28 +125,36 @@ const content: Record<Language, Content> = {
         { question: "Where can I withdraw cash?", answer: "You have access to a network of over 55,000 fee-free ATMs (AllPoint). Plus, you can use your card to pay anywhere Visa is accepted." },
         { question: "Is my money safe in the US?", answer: "Absolutely. Your account is FDIC insured up to $250,000 through our partner bank. Your money is yours and protected under US laws." }
       ],
-      cta: "Have more questions about your BlxckPay?",
+      cta: "Have more questions about BlxckPay?",
       ctaButton: "Contact Support"
     },
     footer: { copyright: "© 2026 Blxck Pay in partnership with Croft.", },
   },
 };
 
-// --- COMPONENTE FAQ ITEM (TEMA CLARO) ---
-const FAQItem = ({ question, answer }: { question: string, answer: string }) => {
+// --- COMPONENTE FAQ ITEM ---
+const FAQItem = ({ question, answer, theme }: { question: string, answer: string, theme: Theme }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Estilos dinámicos según el tema
+  const borderClass = theme === 'dark' ? 'border-zinc-800' : 'border-gray-200';
+  const hoverClass = theme === 'dark' ? 'hover:bg-zinc-900/50' : 'hover:bg-gray-50';
+  const textTitleClass = theme === 'dark' ? (isOpen ? 'text-[#00B3FF]' : 'text-white') : (isOpen ? 'text-[#00B3FF]' : 'text-black');
+  const iconContainerClass = theme === 'dark' ? 'bg-zinc-800 text-white' : 'bg-gray-100 text-black';
+  const iconActiveClass = isOpen ? (theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white') : '';
+  const textBodyClass = theme === 'dark' ? 'text-gray-400' : 'text-gray-600';
+
   return (
-    <motion.div variants={fadeInUp} className="border-b border-gray-200 last:border-0">
+    <motion.div variants={fadeInUp} className={`border-b last:border-0 ${borderClass}`}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full py-6 text-left group hover:bg-gray-50 transition-colors px-4 rounded-lg"
+        className={`flex justify-between items-center w-full py-6 text-left group px-4 rounded-lg transition-colors ${hoverClass}`}
       >
-        <h3 className={`text-lg font-semibold pr-8 transition-colors duration-300 ${isOpen ? 'text-[#00B3FF]' : 'text-black'}`}>
+        <h3 className={`text-lg font-semibold pr-8 transition-colors duration-300 ${textTitleClass}`}>
           {question}
         </h3>
         <div 
-          className={`transform transition-transform duration-300 ease-in-out bg-gray-100 rounded-full p-2 ${isOpen ? 'rotate-90 bg-black text-white' : 'rotate-0 text-black'}`}
+          className={`transform transition-transform duration-300 ease-in-out rounded-full p-2 ${iconContainerClass} ${iconActiveClass} ${isOpen ? 'rotate-90' : 'rotate-0'}`}
         >
           {isOpen ? <X size={18} /> : <Plus size={18} />}
         </div>
@@ -155,7 +162,7 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
       <div 
         className={`overflow-hidden transition-all duration-300 ease-in-out px-4 ${isOpen ? 'max-h-60 opacity-100 pb-6' : 'max-h-0 opacity-0'}`}
       >
-        <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+        <p className={`${textBodyClass} leading-relaxed text-sm md:text-base`}>
           {answer}
         </p>
       </div>
@@ -166,32 +173,59 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 // --- COMPONENTE PRINCIPAL ---
 export default function CroftLandingPage() {
   const [lang, setLang] = useState<Language>('es');
+  const [theme, setTheme] = useState<Theme>('dark'); // Estado inicial Dark Mode
+  
   const t = content[lang];
 
   const toggleLang = () => setLang(prev => prev === 'es' ? 'en' : 'es');
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+
+  // --- CLASES DINÁMICAS GENERALES ---
+  const bgClass = theme === 'dark' ? 'bg-black' : 'bg-white';
+  const textClass = theme === 'dark' ? 'text-white' : 'text-black';
+  const navBgClass = theme === 'dark' ? 'bg-black/90 border-zinc-800' : 'bg-white/90 border-gray-200';
+  const borderClass = theme === 'dark' ? 'border-zinc-900' : 'border-gray-200';
+  const secondaryTextClass = theme === 'dark' ? 'text-gray-400' : 'text-gray-600';
+  const badgeBgClass = theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-gray-100 border-gray-200';
+  const cardBgClass = theme === 'dark' ? 'bg-zinc-900' : 'bg-white';
+  const cardBorderClass = theme === 'dark' ? 'border-zinc-800' : 'border-gray-200';
+  const cardInnerBgClass = theme === 'dark' ? 'bg-black' : 'bg-white';
+  const buttonSecondaryClass = theme === 'dark' ? 'text-white border-zinc-700 hover:bg-zinc-800' : 'text-black border-black hover:bg-black hover:text-white';
+  
+  // Selección de Logo según tema
+  const logoSrc = theme === 'dark' ? "/logoblxckpay_white.png" : "/logoblxckpay.png";
 
   return (
-    <div className={`min-h-screen bg-white text-black ${fontBody.className} selection:bg-[#00B3FF] selection:text-white overflow-x-hidden`}>
+    <div className={`min-h-screen ${bgClass} ${textClass} ${fontBody.className} selection:bg-[#00B3FF] selection:text-white overflow-x-hidden transition-colors duration-500`}>
       
-      {/* --- NAVBAR SIMPLIFICADO --- */}
+      {/* --- NAVBAR --- */}
       <motion.nav 
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="fixed top-0 w-full z-50 bg-white/90 border-b border-gray-200 backdrop-blur-md"
+        className={`fixed top-0 w-full z-50 border-b backdrop-blur-md transition-colors duration-500 ${navBgClass}`}
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
+             {/* Logo Cambiante */}
              <div className="relative w-28 h-8 md:w-36 md:h-10">
-                <Image src="/logoblxckpay.png" alt="Blxck Pay" fill className="object-contain object-left" priority />
+                <Image 
+                    key={theme} // Fuerza re-render al cambiar tema
+                    src={logoSrc} 
+                    alt="Blxck Pay" 
+                    fill 
+                    className="object-contain object-left" 
+                    priority 
+                />
              </div>
-             <div className="h-6 w-[1px] bg-gray-300"></div>
-             <span className="text-black font-bold tracking-widest text-sm md:text-lg">CROFT</span>
+             <div className={`h-6 w-[1px] ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`}></div>
+             <span className={`${textClass} font-bold tracking-widest text-sm md:text-lg`}>CROFT</span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Botón Idioma */}
             <button 
               onClick={toggleLang}
-              className="flex items-center gap-2 text-black border border-gray-300 px-3 py-1.5 rounded-full hover:bg-gray-100 transition uppercase text-xs tracking-wider"
+              className={`flex items-center gap-2 border px-3 py-1.5 rounded-full transition uppercase text-xs tracking-wider ${theme === 'dark' ? 'border-zinc-700 hover:bg-zinc-800' : 'border-gray-300 hover:bg-gray-100'}`}
             >
               <Globe size={14} />
               <AnimatePresence mode='wait'>
@@ -206,19 +240,34 @@ export default function CroftLandingPage() {
                 </motion.span>
               </AnimatePresence>
             </button>
+
+            {/* Botón Tema (Dark/Light) */}
+            <button
+                onClick={toggleTheme}
+                className={`p-2 rounded-full border transition-colors duration-300 ${theme === 'dark' ? 'border-zinc-700 hover:bg-zinc-800 text-yellow-400' : 'border-gray-300 hover:bg-gray-100 text-zinc-600'}`}
+                aria-label="Toggle Theme"
+            >
+                {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
           </div>
         </div>
       </motion.nav>
 
       {/* --- HERO DE VENTA --- */}
-      <section className="pt-32 pb-16 px-6 bg-white relative overflow-hidden border-b border-gray-200">
+      <section className={`pt-32 pb-16 px-6 relative overflow-hidden border-b transition-colors duration-500 ${borderClass}`}>
+        
+        {/* Fondo sutil (Solo en dark mode para dar profundidad) */}
+        {theme === 'dark' && (
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00B3FF]/10 rounded-full blur-[120px] -z-0 pointer-events-none opacity-50"></div>
+        )}
+
         <div className="max-w-4xl mx-auto text-center relative z-10">
             
             <motion.div 
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="inline-flex items-center gap-2 bg-gray-100 border border-gray-200 rounded-full px-4 py-1.5 mb-8"
+                className={`inline-flex items-center gap-2 border rounded-full px-4 py-1.5 mb-8 ${badgeBgClass}`}
             >
                 <Handshake size={16} className="text-[#00B3FF]" />
                 <span className="text-[#00B3FF] text-xs font-bold tracking-widest uppercase">{t.hero.badge}</span>
@@ -228,7 +277,7 @@ export default function CroftLandingPage() {
                 key={`title-${lang}`}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className={`${fontHeading.className} text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] text-black mb-6`}
+                className={`${fontHeading.className} text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-6 ${textClass}`}
             >
               {t.hero.titleLine1} <br />
               <span className="text-[#00B3FF]">
@@ -241,11 +290,12 @@ export default function CroftLandingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10"
+                className={`${secondaryTextClass} text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10`}
             >
               {t.hero.description}
             </motion.p>
 
+            {/* --- FEATURES CON BORDER BEAM --- */}
             <motion.div 
                 variants={staggerContainer}
                 initial="hidden"
@@ -253,9 +303,19 @@ export default function CroftLandingPage() {
                 className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 text-left md:text-center"
             >
                 {t.features.items.map((item, i) => (
-                    <motion.div key={i} variants={fadeInUp} className="bg-white border border-gray-200 shadow-sm rounded-xl p-3 flex flex-col items-center justify-center gap-2">
-                        <CheckCircle size={20} className="text-[#00B3FF]" />
-                        <span className="text-black text-xs font-medium">{item}</span>
+                    <motion.div 
+                        key={i} 
+                        variants={fadeInUp} 
+                        className={`group relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl shadow-lg ${theme === 'dark' ? 'bg-zinc-900' : 'bg-white border border-gray-100'}`}
+                    >
+                        {/* Animación de luz giratoria */}
+                        <div className="absolute inset-[-100%] animate-[spin_10s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,#00B3FF_15%,transparent_30%)] opacity-100" />
+                        
+                        {/* Capa interior (Tapa el centro para dejar solo el borde) */}
+                        <div className={`relative flex h-[calc(100%-3px)] w-[calc(100%-3px)] flex-col items-center justify-center gap-2 rounded-xl p-4 ${cardInnerBgClass}`}>
+                            <CheckCircle size={24} className="text-[#00B3FF]" />
+                            <span className={`${textClass} text-xs md:text-sm font-semibold leading-tight`}>{item}</span>
+                        </div>
                     </motion.div>
                 ))}
             </motion.div>
@@ -266,10 +326,13 @@ export default function CroftLandingPage() {
                 transition={{ delay: 0.6 }}
                 className="flex flex-col items-center gap-4"
             >
-                <button className="bg-black text-white w-full md:w-auto px-10 py-4 rounded-full font-bold text-lg hover:bg-zinc-800 transition shadow-lg flex items-center justify-center gap-2">
+                {/* Botón Principal (Cambia según tema para contraste óptimo) */}
+                <button 
+                    className={`w-full md:w-auto px-10 py-4 rounded-full font-bold text-lg transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 ${theme === 'dark' ? 'bg-[#00B3FF] text-black hover:opacity-90' : 'bg-black text-white hover:bg-zinc-800'}`}
+                >
                     {t.hero.ctaPrimary} <ArrowRight size={20} />
                 </button>
-                <div className="flex items-center gap-2 text-gray-500 text-sm">
+                <div className={`flex items-center gap-2 text-sm ${secondaryTextClass}`}>
                     <ShieldCheck size={16} />
                     <span>{t.hero.trust}</span>
                 </div>
@@ -278,7 +341,7 @@ export default function CroftLandingPage() {
       </section>
 
       {/* --- FAQ SECTION --- */}
-      <section className="bg-white py-20 px-6 relative">
+      <section className={`py-20 px-6 relative transition-colors duration-500 ${bgClass}`}>
          <motion.div 
            key={`faq-${lang}`}
            initial="hidden"
@@ -288,7 +351,7 @@ export default function CroftLandingPage() {
            className="max-w-3xl mx-auto"
          >
             <div className="text-center mb-12">
-               <motion.h2 variants={fadeInUp} className={`${fontHeading.className} text-3xl md:text-4xl font-bold mb-3 text-black`}>
+               <motion.h2 variants={fadeInUp} className={`${fontHeading.className} text-3xl md:text-4xl font-bold mb-3 ${textClass}`}>
                    {t.faq.title}
                </motion.h2>
                <motion.p variants={fadeInUp} className="text-[#00B3FF] font-medium tracking-wide uppercase text-sm">
@@ -298,13 +361,13 @@ export default function CroftLandingPage() {
 
             <div className="space-y-3">
                 {t.faq.items.map((item, index) => (
-                    <FAQItem key={index} question={item.question} answer={item.answer} />
+                    <FAQItem key={index} question={item.question} answer={item.answer} theme={theme} />
                 ))}
             </div>
 
-            <motion.div variants={fadeInUp} className="mt-16 text-center pt-10 border-t border-gray-200">
-                <p className="text-gray-600 mb-6">{t.faq.cta}</p>
-                <button className="text-black border-2 border-black font-bold px-8 py-3 rounded-full hover:bg-black hover:text-white transition inline-flex items-center gap-2">
+            <motion.div variants={fadeInUp} className={`mt-16 text-center pt-10 border-t ${borderClass}`}>
+                <p className={`${secondaryTextClass} mb-6`}>{t.faq.cta}</p>
+                <button className={`border-2 font-bold px-8 py-3 rounded-full transition inline-flex items-center gap-2 ${buttonSecondaryClass}`}>
                     {t.faq.ctaButton} <ChevronRight size={18} />
                 </button>
             </motion.div>
@@ -312,8 +375,8 @@ export default function CroftLandingPage() {
       </section>
 
       {/* --- FOOTER --- */}
-      <footer className="bg-white border-t border-gray-200 py-10 px-6 text-center">
-          <p className="text-gray-500 text-sm">{t.footer.copyright}</p>
+      <footer className={`border-t py-10 px-6 text-center transition-colors duration-500 ${borderClass} ${bgClass}`}>
+          <p className={`${secondaryTextClass} text-sm`}>{t.footer.copyright}</p>
       </footer>
     </div>
   );
