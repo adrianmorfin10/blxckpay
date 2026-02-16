@@ -87,7 +87,7 @@ const content: Record<Language, Content> = {
         { question: "¿Cómo envío dinero a mi familia?", answer: "Es facilísimo. Gracias a nuestra integración con Félix Pago, puedes enviar remesas directamente desde WhatsApp de forma instantánea y segura a México, Guatemala y toda Latinoamérica." },
         { question: "¿Necesito SSN para activar mi tarjeta?", answer: "No. Sabemos que acabas de llegar o estás en proceso. Puedes activar tu cuenta usando solo tu Pasaporte vigente y tu visa H2A." },
         { question: "¿Tiene algún costo recibir mi nómina aquí?", answer: "Ninguno. Puedes darle tu número de cuenta a tu empleador para que deposite tu pago directamente. Es más seguro que el efectivo y llega rápido." },
-        { question: "¿Dónde puedo retirar efectivo?", answer: "Tienes acceso a una red de más de 55,000 cajeros automáticos (AllPoint) sin comisiones. Además, puedes usar tu tarjeta para pagar en cualquier tienda que acepte Visa." },
+        { question: "¿Dónde puedo retirar efectivo?", answer: "Tienes acceso a una red de más de 40,000 cajeros automáticos (Moneypass) sin comisiones. Además, puedes usar tu tarjeta para pagar en cualquier tienda que acepte Visa." },
         { question: "¿Mi dinero está seguro en EE. UU.?", answer: "Totalmente. Tu cuenta está asegurada por la FDIC hasta $250,000 a través de nuestro banco socio. Tu dinero es tuyo y está protegido bajo las leyes estadounidenses." }
       ],
       cta: "¿Tienes más dudas sobre BlxckPay?",
@@ -122,7 +122,7 @@ const content: Record<Language, Content> = {
         { question: "How do I send money to my family?", answer: "It's incredibly easy. Thanks to our partnership with Felix Pago, you can send remittances directly via WhatsApp instantly and securely to Mexico, Guatemala, and all of Latin America." },
         { question: "Do I need an SSN to activate my card?", answer: "No. We know you are just arriving. You can activate your account using just your valid Passport and H2A visa." },
         { question: "Is there a cost to receive my payroll?", answer: "None. You can provide your account number to your employer for direct deposit. It is safer than cash and arrives quickly." },
-        { question: "Where can I withdraw cash?", answer: "You have access to a network of over 55,000 fee-free ATMs (AllPoint). Plus, you can use your card to pay anywhere Visa is accepted." },
+        { question: "Where can I withdraw cash?", answer: "You have access to a network of over 40,000 fee-free ATMs (Moneypass). Plus, you can use your card to pay anywhere Visa is accepted." },
         { question: "Is my money safe in the US?", answer: "Absolutely. Your account is FDIC insured up to $250,000 through our partner bank. Your money is yours and protected under US laws." }
       ],
       cta: "Have more questions about BlxckPay?",
