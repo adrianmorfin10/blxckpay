@@ -88,7 +88,7 @@ const content: Record<Language, Content> = {
         { question: "¿Necesito SSN para activar mi tarjeta?", answer: "No. Sabemos que acabas de llegar o estás en proceso. Puedes activar tu cuenta usando solo tu Pasaporte vigente y tu visa H2A." },
         { question: "¿Tiene algún costo recibir mi nómina aquí?", answer: "Ninguno. Puedes darle tu número de cuenta a tu empleador para que deposite tu pago directamente. Es más seguro que el efectivo y llega rápido." },
         { question: "¿Dónde puedo retirar efectivo?", answer: "Tienes acceso a una red de más de 40,000 cajeros automáticos (Moneypass) sin comisiones. Además, puedes usar tu tarjeta para pagar en cualquier tienda que acepte Visa." },
-        { question: "¿Mi dinero está seguro en EE. UU.?", answer: "Totalmente. Tu cuenta está asegurada por la FDIC hasta $250,000 a través de nuestro banco socio. Tu dinero es tuyo y está protegido bajo las leyes estadounidenses." }
+        { question: "¿Mi dinero está seguro en EE. UU.?", answer: "Totalmente. Tus fondos son elegibles para la cobertura de la FDIC hasta $250,000 a través de nuestro banco sponsor, Community Federal Savings Bank (CFSB) , una institución asegurada por la FDIC. Tu dinero es tuyo y está protegido bajo las leyes de los Estados Unidos." }
       ],
       cta: "¿Tienes más dudas sobre BlxckPay?",
       ctaButton: "Contactar Soporte"
@@ -123,7 +123,7 @@ const content: Record<Language, Content> = {
         { question: "Do I need an SSN to activate my card?", answer: "No. We know you are just arriving. You can activate your account using just your valid Passport and H2A visa." },
         { question: "Is there a cost to receive my payroll?", answer: "None. You can provide your account number to your employer for direct deposit. It is safer than cash and arrives quickly." },
         { question: "Where can I withdraw cash?", answer: "You have access to a network of over 40,000 fee-free ATMs (Moneypass). Plus, you can use your card to pay anywhere Visa is accepted." },
-        { question: "Is my money safe in the US?", answer: "Absolutely. Your account is FDIC insured up to $250,000 through our partner bank. Your money is yours and protected under US laws." }
+        { question: "Is my money safe in the US?", answer: "Absolutely. Your funds are eligible for FDIC insurance up to $250,000 through our sponsor bank, Community Federal Savings Bank (CFSB) , an FDIC-insured institution. Your money is yours and protected under U.S. law." }
       ],
       cta: "Have more questions about BlxckPay?",
       ctaButton: "Contact Support"
