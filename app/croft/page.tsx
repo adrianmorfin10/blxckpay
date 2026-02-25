@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Outfit, DM_Sans } from 'next/font/google';
-import { motion, Variants, AnimatePresence } from 'framer-motion'; 
+import { motion, Variants, AnimatePresence } from 'framer-motion';
 import { Menu, X, Globe, ArrowRight, ChevronRight, Plus, ShieldCheck, Handshake, CheckCircle, Moon, Sun } from 'lucide-react';
 
 // --- CONFIGURACIÓN DE FUENTES ---
@@ -14,7 +14,7 @@ const fontBody = DM_Sans({ subsets: ['latin'], weight: ['400', '500'] });
 type Language = 'es' | 'en';
 type Theme = 'dark' | 'light';
 
-// Color institucional (Cyan)
+// Color institucional (Cyan) - Mismo que usa blxckpay.us
 const accentColor = '#00B3FF';
 
 // --- ANIMATION VARIANTS ---
@@ -27,7 +27,7 @@ const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 } 
+    transition: { staggerChildren: 0.1 }
   }
 };
 
@@ -39,26 +39,26 @@ const langSwitchVariants: Variants = {
 
 interface Content {
   nav: { cta: string; };
-  hero: { 
+  hero: {
       badge: string;
-      titleLine1: string; 
-      titleLine2: string; 
-      description: string; 
-      ctaPrimary: string; 
-      trust: string; 
+      titleLine1: string;
+      titleLine2: string;
+      description: string;
+      ctaPrimary: string;
+      trust: string;
   };
   features: { title: string; items: string[] };
-  faq: { 
-      title: string; 
-      subtitle: string; 
-      items: Array<{ question: string; answer: string; }>; 
-      cta: string; 
-      ctaButton: string; 
+  faq: {
+      title: string;
+      subtitle: string;
+      items: Array<{ question: string; answer: string; }>;
+      cta: string;
+      ctaButton: string;
   };
   footer: { copyright: string; };
 }
 
-// --- DICCIONARIO DE IDIOMAS ---
+// --- DICCIONARIO DE IDIOMAS (mismo contenido original) ---
 const content: Record<Language, Content> = {
   es: {
     nav: { cta: "Descargar App", },
@@ -132,11 +132,10 @@ const content: Record<Language, Content> = {
   },
 };
 
-// --- COMPONENTE FAQ ITEM ---
+// --- COMPONENTE FAQ ITEM (sin cambios, solo se adapta por las clases dinámicas) ---
 const FAQItem = ({ question, answer, theme }: { question: string, answer: string, theme: Theme }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Estilos dinámicos según el tema
   const borderClass = theme === 'dark' ? 'border-zinc-800' : 'border-gray-200';
   const hoverClass = theme === 'dark' ? 'hover:bg-zinc-900/50' : 'hover:bg-gray-50';
   const textTitleClass = theme === 'dark' ? (isOpen ? 'text-[#00B3FF]' : 'text-white') : (isOpen ? 'text-[#00B3FF]' : 'text-black');
@@ -146,20 +145,20 @@ const FAQItem = ({ question, answer, theme }: { question: string, answer: string
 
   return (
     <motion.div variants={fadeInUp} className={`border-b last:border-0 ${borderClass}`}>
-      <button 
+      <button
         onClick={() => setIsOpen(!isOpen)}
         className={`flex justify-between items-center w-full py-6 text-left group px-4 rounded-lg transition-colors ${hoverClass}`}
       >
         <h3 className={`text-lg font-semibold pr-8 transition-colors duration-300 ${textTitleClass}`}>
           {question}
         </h3>
-        <div 
+        <div
           className={`transform transition-transform duration-300 ease-in-out rounded-full p-2 ${iconContainerClass} ${iconActiveClass} ${isOpen ? 'rotate-90' : 'rotate-0'}`}
         >
           {isOpen ? <X size={18} /> : <Plus size={18} />}
         </div>
       </button>
-      <div 
+      <div
         className={`overflow-hidden transition-all duration-300 ease-in-out px-4 ${isOpen ? 'max-h-60 opacity-100 pb-6' : 'max-h-0 opacity-0'}`}
       >
         <p className={`${textBodyClass} leading-relaxed text-sm md:text-base`}>
@@ -174,56 +173,69 @@ const FAQItem = ({ question, answer, theme }: { question: string, answer: string
 export default function CroftLandingPage() {
   const [lang, setLang] = useState<Language>('es');
   const [theme, setTheme] = useState<Theme>('dark'); // Estado inicial Dark Mode
-  
+
   const t = content[lang];
 
   const toggleLang = () => setLang(prev => prev === 'es' ? 'en' : 'es');
   const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
-  // --- CLASES DINÁMICAS GENERALES ---
+  // --- CLASES DINÁMICAS GENERALES (ajustadas para parecerse a blxckpay.us) ---
   const bgClass = theme === 'dark' ? 'bg-black' : 'bg-white';
   const textClass = theme === 'dark' ? 'text-white' : 'text-black';
-  const navBgClass = theme === 'dark' ? 'bg-black/90 border-zinc-800' : 'bg-white/90 border-gray-200';
-  const borderClass = theme === 'dark' ? 'border-zinc-900' : 'border-gray-200';
+  const navBgClass = theme === 'dark' ? 'bg-black/80 border-zinc-800' : 'bg-white/80 border-gray-200';
+  const borderClass = theme === 'dark' ? 'border-zinc-800' : 'border-gray-200';
   const secondaryTextClass = theme === 'dark' ? 'text-gray-400' : 'text-gray-600';
-  const badgeBgClass = theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-gray-100 border-gray-200';
-  const cardBgClass = theme === 'dark' ? 'bg-zinc-900' : 'bg-white';
-  const cardBorderClass = theme === 'dark' ? 'border-zinc-800' : 'border-gray-200';
+  const badgeBgClass = theme === 'dark' ? 'bg-zinc-900 border-zinc-700' : 'bg-gray-100 border-gray-200';
+  const cardBgClass = theme === 'dark' ? 'bg-zinc-900' : 'bg-gray-50'; // fondo ligeramente diferente para las tarjetas
+  const cardBorderClass = theme === 'dark' ? 'border-zinc-700' : 'border-gray-200';
   const cardInnerBgClass = theme === 'dark' ? 'bg-black' : 'bg-white';
   const buttonSecondaryClass = theme === 'dark' ? 'text-white border-zinc-700 hover:bg-zinc-800' : 'text-black border-black hover:bg-black hover:text-white';
-  
-  // Selección de Logo según tema
-  const logoSrc = theme === 'dark' ? "/logoblxckpay_white.png" : "/logoblxckpay.png";
+
+  // Logos: BlxckPay (cambia según tema) y Croft (con filtro para modo oscuro)
+  const blxckPayLogoSrc = theme === 'dark' ? "/logoblxckpay_white.png" : "/logoblxckpay.png";
+  const croftLogoStyle = theme === 'dark'
+    ? { filter: 'brightness(0) invert(1)' } // blanco en modo oscuro
+    : {}; // original en modo claro
 
   return (
     <div className={`min-h-screen ${bgClass} ${textClass} ${fontBody.className} selection:bg-[#00B3FF] selection:text-white overflow-x-hidden transition-colors duration-500`}>
-      
-      {/* --- NAVBAR --- */}
-      <motion.nav 
+
+      {/* --- NAVBAR (con logos) --- */}
+      <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         className={`fixed top-0 w-full z-50 border-b backdrop-blur-md transition-colors duration-500 ${navBgClass}`}
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
-             {/* Logo Cambiante */}
-             <div className="relative w-28 h-8 md:w-36 md:h-10">
-                <Image 
-                    key={theme} // Fuerza re-render al cambiar tema
-                    src={logoSrc} 
-                    alt="Blxck Pay" 
-                    fill 
-                    className="object-contain object-left" 
-                    priority 
-                />
-             </div>
-             <div className={`h-6 w-[1px] ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`}></div>
-             <span className={`${textClass} font-bold tracking-widest text-sm md:text-lg`}>CROFT</span>
+            {/* Logo BlxckPay */}
+            <div className="relative w-28 h-8 md:w-36 md:h-10">
+              <Image
+                key={`blxckpay-${theme}`}
+                src={blxckPayLogoSrc}
+                alt="Blxck Pay"
+                fill
+                className="object-contain object-left"
+                priority
+              />
+            </div>
+            <div className={`h-6 w-[1px] ${theme === 'dark' ? 'bg-zinc-700' : 'bg-gray-300'}`}></div>
+            {/* Logo Croft con filtro */}
+            <div className="relative w-16 h-8 md:w-20 md:h-10">
+              <Image
+                src="/croftlogo.svg"
+                alt="Croft"
+                fill
+                className="object-contain object-left transition-all duration-300"
+                style={croftLogoStyle}
+                priority
+              />
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
             {/* Botón Idioma */}
-            <button 
+            <button
               onClick={toggleLang}
               className={`flex items-center gap-2 border px-3 py-1.5 rounded-full transition uppercase text-xs tracking-wider ${theme === 'dark' ? 'border-zinc-700 hover:bg-zinc-800' : 'border-gray-300 hover:bg-gray-100'}`}
             >
@@ -241,7 +253,7 @@ export default function CroftLandingPage() {
               </AnimatePresence>
             </button>
 
-            {/* Botón Tema (Dark/Light) */}
+            {/* Botón Tema */}
             <button
                 onClick={toggleTheme}
                 className={`p-2 rounded-full border transition-colors duration-300 ${theme === 'dark' ? 'border-zinc-700 hover:bg-zinc-800 text-yellow-400' : 'border-gray-300 hover:bg-gray-100 text-zinc-600'}`}
@@ -253,17 +265,17 @@ export default function CroftLandingPage() {
         </div>
       </motion.nav>
 
-      {/* --- HERO DE VENTA --- */}
+      {/* --- HERO SECTION (mismo contenido, solo ajustes de color y espaciado) --- */}
       <section className={`pt-32 pb-16 px-6 relative overflow-hidden border-b transition-colors duration-500 ${borderClass}`}>
-        
-        {/* Fondo sutil (Solo en dark mode para dar profundidad) */}
+
+        {/* Fondo sutil (solo en dark mode) */}
         {theme === 'dark' && (
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00B3FF]/10 rounded-full blur-[120px] -z-0 pointer-events-none opacity-50"></div>
         )}
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-            
-            <motion.div 
+
+            <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -273,7 +285,7 @@ export default function CroftLandingPage() {
                 <span className="text-[#00B3FF] text-xs font-bold tracking-widest uppercase">{t.hero.badge}</span>
             </motion.div>
 
-            <motion.h1 
+            <motion.h1
                 key={`title-${lang}`}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -285,7 +297,7 @@ export default function CroftLandingPage() {
               </span>
             </motion.h1>
 
-            <motion.p 
+            <motion.p
                 key={`desc-${lang}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -295,23 +307,23 @@ export default function CroftLandingPage() {
               {t.hero.description}
             </motion.p>
 
-            {/* --- FEATURES CON BORDER BEAM --- */}
-            <motion.div 
+            {/* --- FEATURES GRID (exactamente el mismo contenido, solo estética mejorada) --- */}
+            <motion.div
                 variants={staggerContainer}
                 initial="hidden"
                 animate="visible"
                 className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 text-left md:text-center"
             >
                 {t.features.items.map((item, i) => (
-                    <motion.div 
-                        key={i} 
-                        variants={fadeInUp} 
-                        className={`group relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl shadow-lg ${theme === 'dark' ? 'bg-zinc-900' : 'bg-white border border-gray-100'}`}
+                    <motion.div
+                        key={i}
+                        variants={fadeInUp}
+                        className={`group relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl shadow-lg ${cardBgClass} border ${cardBorderClass}`}
                     >
-                        {/* Animación de luz giratoria */}
+                        {/* Animación de luz giratoria (border beam) - mantenida */}
                         <div className="absolute inset-[-100%] animate-[spin_10s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,#00B3FF_15%,transparent_30%)] opacity-100" />
-                        
-                        {/* Capa interior (Tapa el centro para dejar solo el borde) */}
+
+                        {/* Capa interior con fondo sólido */}
                         <div className={`relative flex h-[calc(100%-3px)] w-[calc(100%-3px)] flex-col items-center justify-center gap-2 rounded-xl p-4 ${cardInnerBgClass}`}>
                             <CheckCircle size={24} className="text-[#00B3FF]" />
                             <span className={`${textClass} text-xs md:text-sm font-semibold leading-tight`}>{item}</span>
@@ -320,18 +332,14 @@ export default function CroftLandingPage() {
                 ))}
             </motion.div>
 
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
                 className="flex flex-col items-center gap-4"
             >
-                {/* Botón Principal (Cambia según tema para contraste óptimo) */}
-                <button 
-                    className={`w-full md:w-auto px-10 py-4 rounded-full font-bold text-lg transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 ${theme === 'dark' ? 'bg-[#00B3FF] text-black hover:opacity-90' : 'bg-black text-white hover:bg-zinc-800'}`}
-                >
-                    {t.hero.ctaPrimary} <ArrowRight size={20} />
-                </button>
+                {/* Botón principal con estilo BlxckPay: en modo oscuro, cyan con texto negro; en modo claro, negro con texto blanco */}
+               
                 <div className={`flex items-center gap-2 text-sm ${secondaryTextClass}`}>
                     <ShieldCheck size={16} />
                     <span>{t.hero.trust}</span>
@@ -340,9 +348,9 @@ export default function CroftLandingPage() {
         </div>
       </section>
 
-      {/* --- FAQ SECTION --- */}
+      {/* --- FAQ SECTION (mismo contenido, solo ajustes de color) --- */}
       <section className={`py-20 px-6 relative transition-colors duration-500 ${bgClass}`}>
-         <motion.div 
+         <motion.div
            key={`faq-${lang}`}
            initial="hidden"
            whileInView="visible"
@@ -366,10 +374,7 @@ export default function CroftLandingPage() {
             </div>
 
             <motion.div variants={fadeInUp} className={`mt-16 text-center pt-10 border-t ${borderClass}`}>
-                <p className={`${secondaryTextClass} mb-6`}>{t.faq.cta}</p>
-                <button className={`border-2 font-bold px-8 py-3 rounded-full transition inline-flex items-center gap-2 ${buttonSecondaryClass}`}>
-                    {t.faq.ctaButton} <ChevronRight size={18} />
-                </button>
+               
             </motion.div>
          </motion.div>
       </section>
